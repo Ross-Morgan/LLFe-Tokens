@@ -1,15 +1,25 @@
 #[derive(Clone, Debug, Hash, PartialEq)]
+#[allow(non_camel_case_types)]
 pub enum Token {
     INT32(i32),
     INT64(i64),
     STR(String),
 
+    VAR_REF(String),
+    FUNC_REF(String),
+
+    REGISTER(i32),
+
     ATTR(String, Option<Box<Self>>),
 
-    MOV(i32, i32),
+    MOV(Box<Self>, Box<Self>),
     LDR(i32, i32),
 
+    RISC(Box<Self>),
+
     RUN(String),
+
+    NOP
 }
 
 
@@ -58,9 +68,9 @@ impl Eq for Attr {}
 impl FunctionBuilder {
     pub fn build(self) -> Function {
         Function {
-            name: self.name.expect(""),
-            attrs: self.attrs.expect(""),
-            contents: self.contents.expect("")
+            name: self.name.expect("Function builder missing name"),
+            attrs: self.attrs.expect("Function builder missing attrs"),
+            contents: self.contents.expect("Function builder missing contents"),
         }
     }
 }
