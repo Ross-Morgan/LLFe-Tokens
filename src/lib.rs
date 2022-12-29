@@ -1,3 +1,8 @@
+mod consts;
+mod vars;
+
+mod traits;
+
 #[derive(Clone, Debug, Hash, PartialEq)]
 #[allow(non_camel_case_types)]
 pub enum Token {
@@ -23,17 +28,9 @@ pub enum Token {
 }
 
 
-#[derive(Clone, Debug, Hash, PartialEq)]
-pub struct Const {
-    pub name: String,
-    pub value: Token,
-}
 
-#[derive(Clone, Debug, Hash, PartialEq)]
-pub struct Var {
-    pub name: String,
-    pub value: Token,
-}
+
+
 
 #[derive(Clone, Debug, Default, Hash, PartialEq)]
 pub struct Function {
@@ -77,4 +74,55 @@ impl FunctionBuilder {
 
 impl Function {
     pub fn build(self) -> Self { self }
+}
+
+pub struct DataBuilder {
+    name: Option<String>,
+    value: Option<Token>,
+}
+
+impl Data for Const {
+    fn name(&self) -> &String {
+        &self.name
+    }
+
+    fn value(&self) -> &Token {
+        &self.value
+    }
+}
+
+impl Data for Var {
+    fn name(&self) -> &String {
+        &self.name
+    }
+
+    fn value(&self) -> &Token {
+        &self.value
+    }
+}
+
+impl DataBuilder {
+    pub fn build_const(self) -> Const {
+        Const {
+            name: self.name.expect("Const builder missing name"),
+            value: self.value.expect("Const builder missing value"),
+        }
+    }
+
+    pub fn build_var(self) -> Var {
+        Var {
+            name: self.name.expect("Var builder missing name"),
+            value: self.value.expect("Var builder missing value"),
+        }
+    }
+}
+
+impl DataBuild for DataBuilder {
+    fn set_name(&mut self, name: &str) {
+        self.name = Some(name.to_string())
+    }
+
+    fn set_value(&mut self, value: &Token) {
+        self.value = Some(value.clone())
+    }
 }
