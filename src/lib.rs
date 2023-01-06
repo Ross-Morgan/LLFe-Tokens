@@ -78,6 +78,7 @@ impl Function {
     pub fn build(self) -> Self { self }
 }
 
+#[derive(Clone, Debug, Default)]
 pub struct DataBuilder {
     name: Option<String>,
     value: Option<Token>,
@@ -104,18 +105,8 @@ impl Data for Var {
 }
 
 impl DataBuilder {
-    pub fn build_const(self) -> consts::Const {
-        consts::Const {
-            name: self.name.expect("Const builder missing name"),
-            value: self.value.expect("Const builder missing value"),
-        }
-    }
-
-    pub fn build_var(self) -> vars::Var {
-        vars::Var {
-            name: self.name.expect("Var builder missing name"),
-            value: self.value.expect("Var builder missing value"),
-        }
+    pub fn new(name: Option<String>, value: Option<Token>) -> Self {
+        Self { name, value }
     }
 }
 
