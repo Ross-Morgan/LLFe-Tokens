@@ -7,7 +7,6 @@ use vars::Var;
 use traits::{Data, DataBuild, NewData};
 
 #[derive(Clone, Debug, Hash, PartialEq)]
-#[allow(non_camel_case_types)]
 pub enum Token {
     Int32(i32),
     Int64(i64),
@@ -25,7 +24,7 @@ pub enum Token {
 
     RISC(Box<Self>),
 
-    Run(String),
+    RUN(String),
 
     NOP
 }
