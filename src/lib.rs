@@ -1,28 +1,31 @@
-mod consts;
-mod vars;
+pub mod consts;
+pub mod vars;
+pub mod traits;
 
-mod traits;
+use consts::Const;
+use vars::Var;
+use traits::{Data, DataBuild, NewData};
 
 #[derive(Clone, Debug, Hash, PartialEq)]
 #[allow(non_camel_case_types)]
 pub enum Token {
-    INT32(i32),
-    INT64(i64),
+    Int32(i32),
+    Int64(i64),
     STR(String),
 
-    VAR_REF(String),
-    FUNC_REF(String),
+    VarRef(String),
+    FuncRef(String),
 
-    REGISTER(i32),
+    Register(i32),
 
-    ATTR(String, Option<Box<Self>>),
+    Attr(String, Option<Box<Self>>),
 
     MOV(Box<Self>, Box<Self>),
     LDR(i32, i32),
 
     RISC(Box<Self>),
 
-    RUN(String),
+    Run(String),
 
     NOP
 }
@@ -102,15 +105,15 @@ impl Data for Var {
 }
 
 impl DataBuilder {
-    pub fn build_const(self) -> Const {
-        Const {
+    pub fn build_const(self) -> consts::Const {
+        consts::Const {
             name: self.name.expect("Const builder missing name"),
             value: self.value.expect("Const builder missing value"),
         }
     }
 
-    pub fn build_var(self) -> Var {
-        Var {
+    pub fn build_var(self) -> vars::Var {
+        vars::Var {
             name: self.name.expect("Var builder missing name"),
             value: self.value.expect("Var builder missing value"),
         }
@@ -125,4 +128,24 @@ impl DataBuild for DataBuilder {
     fn set_value(&mut self, value: &Token) {
         self.value = Some(value.clone())
     }
+
+    fn build<T: NewData>(self) -> T {
+        T::new(
+            self.name.expect("No name specified"),
+            self.value.expect("No value specified"),
+        )
+    }
+}
+
+pub mod prelude {
+    pub use super::consts::Const;
+    pub use super::vars::Var;
+
+    pub use super::Attr;
+    pub use super::Function;
+    pub use super::FunctionBuilder;
+
+    pub use super::traits::Data;
+    pub use super::traits::NewData;
+    pub use super::Token;
 }
